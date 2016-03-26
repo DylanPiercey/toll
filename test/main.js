@@ -5,7 +5,7 @@ var https       = require("https");
 var request     = require("supertest");
 var toll        = require("../");
 var createProxy = toll.createProxy;
-var register    = toll.register;
+var connect     = toll.connect;
 
 test("proxy http", function (t) {
 	t.plan(3);
@@ -17,28 +17,27 @@ test("proxy http", function (t) {
 
 	// Start the proxy.
 	var proxy = createProxy().listen();
+	var connection = connect(proxy);
 
 	// Register the example server.
-	register(server, {
-		proxy: proxy.address(),
-		hosts: ["localhost"]
+	connection.register(server, ["localhost"]).then(function () {
+		// Valid host proxy
+		request("http://localhost:" + proxy.address().port)
+			.get("/")
+			.end(function (err, res) {
+				if (err) t.fail(err);
+				t.equals(res.text, "HTTP-Server", "server should respond");
+			});
+
+		// Invalid host proxy.
+		request("http://127.0.0.1:" + proxy.address().port)
+			.get("/")
+			.end(function (err, res) {
+				t.ok(err, "error should exist");
+				t.equals(err.code, "ECONNRESET", "connection should fail");
+			});
 	});
 
-	// Valid host proxy
-	request("http://localhost:" + proxy.address().port)
-		.get("/")
-		.end(function (err, res) {
-			if (err) t.fail(err);
-			t.equals(res.text, "HTTP-Server", "server should respond");
-		});
-
-	// Invalid host proxy.
-	request("http://127.0.0.1:" + proxy.address().port)
-		.get("/")
-		.end(function (err, res) {
-			t.ok(err, "error should exist");
-			t.equals(err.code, "ECONNRESET", "connection should fail");
-		});
 });
 
 
@@ -58,28 +57,27 @@ test("proxy https", function (t) {
 
 	// Start the proxy.
 	var proxy = createProxy().listen();
+	var connection = connect(proxy);
 
 	// Register the example server.
-	register(server, {
-		proxy: proxy.address(),
-		hosts: ["localhost"]
+	connection.register(server, ["localhost"]).then(function () {
+		// Valid host proxy
+		request("https://localhost:" + proxy.address().port)
+			.get("/")
+			.end(function (err, res) {
+				if (err) t.fail(err);
+				t.equals(res.text, "HTTPS-Server", "server should respond");
+			});
+
+		// Invalid host proxy.
+		request("https://127.0.0.1:" + proxy.address().port)
+			.get("/")
+			.end(function (err, res) {
+				t.ok(err, "error should exist");
+				t.equals(err.code, "ECONNRESET", "connection should fail");
+			});
 	});
 
-	// Valid host proxy
-	request("https://localhost:" + proxy.address().port)
-		.get("/")
-		.end(function (err, res) {
-			if (err) t.fail(err);
-			t.equals(res.text, "HTTPS-Server", "server should respond");
-		});
-
-	// Invalid host proxy.
-	request("https://127.0.0.1:" + proxy.address().port)
-		.get("/")
-		.end(function (err, res) {
-			t.ok(err, "error should exist");
-			t.equals(err.code, "ECONNRESET", "connection should fail");
-		});
 });
 
 test("proxy unregister", function (t) {
@@ -87,6 +85,7 @@ test("proxy unregister", function (t) {
 
 	// Start the proxy.
 	var proxy = createProxy().listen();
+	var connection = connect(proxy);
 
 	// Start up an example http server.
 	var server = http.createServer(function (req, res) {
@@ -94,21 +93,16 @@ test("proxy unregister", function (t) {
 	}).listen();
 
 	// Register the example server.
-	register(server, {
-		proxy: proxy.address(),
-		hosts: ["localhost"]
-	}).then(function () {
-		var href = "http://localhost:" + proxy.address().port;
-
+	connection.register(server, ["127.0.0.1"]).then(function () {
 		// Valid host proxy
-		request(href)
+		request(proxy)
 			.get("/")
 			.end(function (err, res) {
 				if (err) t.fail(err);
 				t.equals(res.text, "HTTP-Server", "server should respond");
 				server.close();
 				// Close host proxy
-				request("http://localhost:" + proxy.address().port)
+				request(proxy)
 					.get("/")
 					.end(function (err, res) {
 						t.ok(err, "error should exist");
@@ -124,6 +118,7 @@ test("proxy multiple", function (t) {
 
 	// Start the proxy.
 	var proxy = createProxy().listen();
+	var connection = connect(proxy);
 
 	// Start up an example http server.
 	var server1 = http.createServer(function (req, res) {
@@ -136,14 +131,8 @@ test("proxy multiple", function (t) {
 	}).listen();
 
 	Promise.all([
-		register(server1, {
-			proxy: proxy.address(),
-			hosts: ["test.com"]
-		}),
-		register(server2, {
-			proxy: proxy.address(),
-			hosts: ["api.test.com"]
-		})
+		connection.register(server1, ["test.com"]),
+		connection.register(server2, ["api.test.com"])
 	]).then(function () {
 		// Valid host proxy
 		request(proxy)
@@ -181,5 +170,4 @@ test("proxy multiple", function (t) {
 					});
 			});
 	});
-
 });

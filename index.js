@@ -1,4 +1,8 @@
+var Connection = require("./lib/connection");
+
 module.exports = {
-	register: require("./lib/register"),
-	createProxy: require("./lib/proxy")
+	createProxy: require("./lib/proxy"),
+	connect: function (proxy, opts) {
+		return new Connection(proxy, opts);
+	},
 };

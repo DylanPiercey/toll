@@ -22,11 +22,11 @@ var toll = require("toll");
 // Start up a server at an arbitrary port.
 var server = require("http").createServer(...).listen();
 
+// Connect to Toll proxy.
+var proxy = toll.connect(80);
+
 // Register the server with toll.
-toll.register(server, {
-	proxy: "localhost:80",
-	hosts: ["api.myapp.com", "api.v2.myapp.com"]
-});
+proxy.register(server, ["api.myapp.com", "api.v2.myapp.com"]);
 ```
 
 ## Starting a Toll server.
@@ -39,26 +39,33 @@ server.listen(80);
 ```
 
 # API
-+ **register(server, opts)** : Registers a node server with a Toll proxy server.
-
-
-```javascript
-// Registered server must be listening and have an "address" function.
-// Note that a registered server will be dropped if Toll can't connect to it until it sends another heartbeat.
-toll.register(server, {
-	proxy: ..., // A string url pointing to the toll proxy or an object with { host, port }.
-	hosts: ..., // Array of hostnames that this specific server will accept from the Toll proxy.
-	heartbeat: 15000 // How often (in ms) to notify the toll server that this server is still alive.
-})
-```
-
-+ **createProxy()** : Creates a Toll proxy server.
-
++ **toll.createProxy()** : Creates a Toll proxy server.
 
 ```javascript
 // Creates a net.Server which which will automatically proxy registered toll services.
 toll.createProxy().listen(80);
 ```
+
++ **toll.connect(port, [opts])**
++ **toll.connect(path, [opts])**
++ **toll.connect(url, [opts])**
++ **toll.connect({ host, port }, [opts])**
+Creates a new connection to a Toll proxy at a given port.
+
+```javascript
+// Creates a proxy Connection that sends a heartbeat every 15 seconds.
+var proxy = toll.connect(80, { heartbeat: 15000 });
+```
+
++ **proxy.register(server, [hosts...])** : Registers a server with a Toll proxy.
+
+```javascript
+// Registered server must be listening and have an "address" function.
+// Note that a registered server will be dropped if Toll can't connect to it until it sends another heartbeat.
+proxy.register(server, "a.b.com");
+proxy.register(server, ["apo.a.b.com", "test.a.b.com"]);
+```
+
 
 # CLI
 
