@@ -63,7 +63,7 @@ var proxy = toll.connect(80, { heartbeat: 15000 });
 // Registered server must be listening and have an "address" function.
 // Note that a registered server will be dropped if Toll can't connect to it until it sends another heartbeat.
 proxy.register(server, "a.b.com");
-proxy.register(server, ["apo.a.b.com", "test.a.b.com"]);
+proxy.register(server, ["api.a.b.com", "test.a.b.com"]);
 ```
 
 
