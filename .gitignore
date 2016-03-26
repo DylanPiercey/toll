@@ -1,13 +1,8 @@
-## Directory-based project format
+# Editor
 *.sublime*
 
 # OSX
 *.DS_Store
 
+# NPM
 node_modules
-
-# Compiled JS
-bin
-
-# Temp file
-__master

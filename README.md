@@ -60,6 +60,17 @@ toll.register(server, {
 toll.createProxy().listen(80);
 ```
 
+# CLI
+
+Start a Toll Proxy server from the cli.
+
+```terminal
+npm install toll -g
+
+toll <port> [ip]
+toll 80 127.0.0.1
+```
+
 ---
 
 ### Contributions
