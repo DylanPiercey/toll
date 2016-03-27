@@ -4,6 +4,8 @@
 
 # Toll
 
+[![Join the chat at https://gitter.im/DylanPiercey/toll](https://badges.gitter.im/DylanPiercey/toll.svg)](https://gitter.im/DylanPiercey/toll?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Utility to manage dynamic micro-services by proxying hostnames to other node servers.
 
 # Why
