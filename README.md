@@ -1,3 +1,7 @@
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+[![Join the chat at https://gitter.im/DylanPiercey/toll](https://badges.gitter.im/DylanPiercey/toll.svg)](https://gitter.im/DylanPiercey/toll?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 # Toll
 
 Utility to manage dynamic micro-services by proxying hostnames to other node servers.
