@@ -1,10 +1,10 @@
 {
   "name": "toll",
   "description": "Simple node hostname proxying and registration for micro-services.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Dylan Piercey <pierceydylan@gmail.com>",
   "bin": "bin/index.js",
-  "bugs": "https://github.com/toll/issues",
+  "bugs": "https://github.com/DylanPiercey/toll/issues",
   "dependencies": {
     "commander": "^2.9.0"
   },
@@ -15,7 +15,7 @@
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1"
   },
-  "homepage": "https://github.com/toll",
+  "homepage": "https://github.com/DylanPiercey/toll",
   "keywords": [
     "discovery",
     "microservice",
@@ -30,7 +30,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/toll"
+    "url": "https://github.com/DylanPiercey/toll"
   },
   "scripts": {
     "test": "standard --verbose | snazzy && node ./test main"
