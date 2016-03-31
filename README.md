@@ -50,9 +50,9 @@ server.listen(80);
 toll.createProxy().listen(80);
 ```
 
-+ **toll.connect(path, [opts])**
-+ **toll.connect(port, host, [opts])**
-+ **toll.connect({ path, host, port, opts... })**
++ **toll.connect(path)**
++ **toll.connect(port, host)**
++ **toll.connect({ path, host, port, heartbeat })**
 Creates a new connection to a Toll proxy at a given port.
 
 ```javascript
