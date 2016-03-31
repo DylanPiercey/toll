@@ -27,7 +27,7 @@ var toll = require("toll");
 var server = require("http").createServer(...).listen();
 
 // Connect to Toll proxy.
-var proxy = toll.connect("localhost:80");
+var proxy = toll.connect(80);
 
 // Register the server with toll.
 proxy.register(server, ["api.myapp.com", "api.v2.myapp.com"]);
@@ -51,12 +51,18 @@ toll.createProxy().listen(80);
 ```
 
 + **toll.connect(path, [opts])**
-+ **toll.connect({ host, port }, [opts])**
++ **toll.connect(port, host, [opts])**
++ **toll.connect({ path, host, port, opts... })**
 Creates a new connection to a Toll proxy at a given port.
 
 ```javascript
 // Creates a proxy Connection that sends a heartbeat every 15 seconds.
-var proxy = toll.connect("localhost:80", { heartbeat: 15000 });
+// Api is the same as net.connect. (except for the return value).
+var proxy = toll.connect({
+	port: 80,
+	host: "localhost".
+	heartbeat: 15000
+});
 ```
 
 + **proxy.register(server, [hosts...])** : Registers a server with a Toll proxy.

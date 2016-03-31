@@ -18,7 +18,7 @@ test('proxy http', function (t) {
 
   // Start the proxy.
   var proxy = createProxy().listen()
-  var connection = connect(proxy)
+  var connection = connect(proxy.address())
 
   // Register the example server.
   connection.register(server, ['localhost']).then(function () {
@@ -56,7 +56,7 @@ test('proxy https', function (t) {
 
   // Start the proxy.
   var proxy = createProxy().listen()
-  var connection = connect(proxy)
+  var connection = connect(proxy.address())
 
   // Register the example server.
   connection.register(server, ['localhost']).then(function () {
@@ -83,7 +83,7 @@ test('proxy unregister', function (t) {
 
   // Start the proxy.
   var proxy = createProxy().listen()
-  var connection = connect(proxy)
+  var connection = connect(proxy.address())
 
   // Start up an example http server.
   var server = http.createServer(function (req, res) {
@@ -115,7 +115,7 @@ test('proxy multiple', function (t) {
 
   // Start the proxy.
   var proxy = createProxy().listen()
-  var connection = connect(proxy)
+  var connection = connect(proxy.address())
 
   // Start up an example http server.
   var server1 = http.createServer(function (req, res) {
