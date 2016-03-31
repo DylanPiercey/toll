@@ -50,7 +50,7 @@ server.listen(80);
 toll.createProxy().listen(80);
 ```
 
-+ **toll.connect(url, [opts])**
++ **toll.connect(path, [opts])**
 + **toll.connect({ host, port }, [opts])**
 Creates a new connection to a Toll proxy at a given port.
 
