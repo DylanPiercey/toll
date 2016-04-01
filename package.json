@@ -1,12 +1,13 @@
 {
   "name": "toll",
   "description": "Simple node hostname proxying and registration for micro-services.",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": "Dylan Piercey <pierceydylan@gmail.com>",
   "bin": "bin/index.js",
   "bugs": "https://github.com/DylanPiercey/toll/issues",
   "dependencies": {
-    "commander": "^2.9.0"
+    "commander": "^2.9.0",
+    "is-local-ip": "^1.0.0"
   },
   "devDependencies": {
     "snazzy": "^3.0.0",
