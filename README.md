@@ -90,6 +90,6 @@ toll 80 127.0.0.1
 
 ### Contributions
 
-* Use gulp to run tests.
+* Use `npm test` to run tests.
 
 Please feel free to create a PR!
