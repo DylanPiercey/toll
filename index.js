@@ -1,9 +1,12 @@
-var normalizeConnectArgs = require('net')._normalizeConnectArgs
-var Connection = require('./lib/connection')
+var Server = require('./lib/server')
+var Client = require('./lib/client')
+var normalizeConnect = require('./lib/util').normalizeConnect
 
 module.exports = {
-  createProxy: require('./lib/proxy'),
+  createProxy: function () {
+    return new Server()
+  },
   connect: function () {
-    return new Connection(normalizeConnectArgs(arguments)[0])
+    return new Client(normalizeConnect(arguments))
   }
 }

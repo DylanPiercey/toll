@@ -1,7 +1,7 @@
 {
   "name": "toll",
   "description": "Simple node hostname proxying and registration for micro-services.",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "author": "Dylan Piercey <pierceydylan@gmail.com>",
   "bin": "bin/index.js",
   "bugs": "https://github.com/DylanPiercey/toll/issues",
@@ -34,6 +34,7 @@
     "url": "https://github.com/DylanPiercey/toll"
   },
   "scripts": {
-    "test": "standard --verbose | snazzy && node ./test main"
+    "lint": "standard --verbose | snazzy",
+    "test": "npm run lint && tape ./**/*.test.js | tap-spec"
   }
 }

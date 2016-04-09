@@ -7,6 +7,7 @@ var request = require('supertest')
 var toll = require('../')
 var createProxy = toll.createProxy
 var connect = toll.connect
+test.onFinish(process.exit)
 
 test('proxy http', function (t) {
   t.plan(3)
@@ -21,7 +22,7 @@ test('proxy http', function (t) {
   var connection = connect(proxy.address())
 
   // Register the example server.
-  connection.register(server, ['localhost']).then(function () {
+  connection.register(['localhost'], server.address()).then(function () {
     // Valid host proxy
     request('http://localhost:' + proxy.address().port)
       .get('/')
@@ -59,7 +60,7 @@ test('proxy https', function (t) {
   var connection = connect(proxy.address())
 
   // Register the example server.
-  connection.register(server, ['localhost']).then(function () {
+  connection.register(['localhost'], server.address()).then(function () {
     // Valid host proxy
     request('https://localhost:' + proxy.address().port)
       .get('/')
@@ -78,7 +79,7 @@ test('proxy https', function (t) {
   })
 })
 
-test('proxy unregister', function (t) {
+test('proxy unregister by closing', function (t) {
   t.plan(3)
 
   // Start the proxy.
@@ -91,7 +92,7 @@ test('proxy unregister', function (t) {
   }).listen()
 
   // Register the example server.
-  connection.register(server, ['127.0.0.1']).then(function () {
+  connection.register(['127.0.0.1'], server.address()).then(function () {
     // Valid host proxy
     request(proxy)
       .get('/')
@@ -106,6 +107,72 @@ test('proxy unregister', function (t) {
             t.ok(err, 'error should exist')
             t.equals(err.code, 'ECONNRESET', 'connection should fail')
           })
+      })
+  })
+})
+
+test('proxy unregister by removing (client)', function (t) {
+  t.plan(3)
+
+  // Start the proxy.
+  var proxy = createProxy().listen()
+  var connection = connect(proxy.address())
+
+  // Start up an example http server.
+  var server = http.createServer(function (req, res) {
+    res.end('HTTP-Server')
+  }).listen()
+
+  // Register the example server.
+  connection.register(['127.0.0.1'], server.address()).then(function () {
+    // Valid host proxy
+    request(proxy)
+      .get('/')
+      .end(function (err, res) {
+        if (err) t.fail(err)
+        t.equals(res.text, 'HTTP-Server', 'server should respond')
+        // Close host proxy
+        connection.remove('127.0.0.1').then(function () {
+          request(proxy)
+            .get('/')
+            .end(function (err, res) {
+              t.ok(err, 'error should exist')
+              t.equals(err.code, 'ECONNRESET', 'connection should fail')
+            })
+        })
+      })
+  })
+})
+
+test('proxy unregister by removing (server)', function (t) {
+  t.plan(3)
+
+  // Start the proxy.
+  var proxy = createProxy().listen()
+  var connection = connect(proxy.address())
+
+  // Start up an example http server.
+  var server = http.createServer(function (req, res) {
+    res.end('HTTP-Server')
+  }).listen()
+
+  // Register the example server.
+  connection.register(['127.0.0.1'], server.address()).then(function () {
+    // Valid host proxy
+    request(proxy)
+      .get('/')
+      .end(function (err, res) {
+        if (err) t.fail(err)
+        t.equals(res.text, 'HTTP-Server', 'server should respond')
+        // Close host proxy
+        proxy.remove('127.0.0.1').then(function () {
+          request(proxy)
+            .get('/')
+            .end(function (err, res) {
+              t.ok(err, 'error should exist')
+              t.equals(err.code, 'ECONNRESET', 'connection should fail')
+            })
+        })
       })
   })
 })
@@ -128,8 +195,8 @@ test('proxy multiple', function (t) {
   }).listen()
 
   Promise.all([
-    connection.register(server1, ['test.com']),
-    connection.register(server2, ['api.test.com'])
+    connection.register(['test.com'], server1.address()),
+    connection.register(['api.test.com'], server2.address())
   ]).then(function () {
     // Valid host proxy
     request(proxy)

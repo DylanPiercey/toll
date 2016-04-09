@@ -30,7 +30,10 @@ var server = require("http").createServer(...).listen();
 var proxy = toll.connect(80);
 
 // Register the server with toll.
-proxy.register(server, ["api.myapp.com", "api.v2.myapp.com"]);
+proxy.register(
+	["api.myapp.com", "api.v2.myapp.com"], // List of hosts this server accepts.
+	server.address() // The servers address (same api as connect)
+);
 ```
 
 ## Starting a Toll server.
@@ -47,7 +50,7 @@ server.listen(80);
 
 ```javascript
 // Creates a net.Server which which will automatically proxy registered toll services.
-toll.createProxy().listen(80);
+var proxy = toll.createProxy().listen(80);
 ```
 
 + **toll.connect(path)**
@@ -65,15 +68,26 @@ var proxy = toll.connect({
 });
 ```
 
-+ **proxy.register(server, [hosts...])** : Registers a server with a Toll proxy.
+### The Following api works the same for both the proxy server and the connected hosts.
+
++ **proxy.register(hosts, path)**
++ **proxy.register(hosts, port, host)**
++ **proxy.register(hosts, { path, host, port }) -> Promise**
+Registers hosts with a Toll proxy.
 
 ```javascript
-// Registered server must be listening and have an "address" function.
-// Note that a registered server will be dropped if Toll can't connect to it until it sends another heartbeat.
-proxy.register(server, "a.b.com");
-proxy.register(server, ["api.a.b.com", "test.a.b.com"]);
+// Registers arguments are flexable like `toll.connect` but must start with a host(s).
+proxy.register("a.b.com", server.address());
+proxy.register(["api.a.b.com", "test.a.b.com"], 3002, "127.0.0.1");
 ```
 
++ **proxy.remove(hosts) -> Promise**
+Unregisters a hosts with a Toll proxy.
+
+```javascript
+proxy.remove("a.b.com");
+proxy.remove(["api.a.b.com", "test.a.b.com"]);
+```
 
 # CLI
 
